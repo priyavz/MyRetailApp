@@ -1,9 +1,9 @@
 package com.myretail.service.impl;
 
-import com.myretail.dao.ProductPriceRepository;
-import com.myretail.exception.ProductNotFoundException;
-import com.myretail.model.CurrentPrice;
-import com.myretail.model.ProductPriceEntity;
+import com.myretail.common.dao.ProductPriceRepository;
+import com.myretail.common.exception.ProductNotFoundException;
+import com.myretail.common.model.CurrentPrice;
+import com.myretail.common.model.ProductPriceEntity;
 import com.myretail.service.ProductPriceService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -58,7 +58,6 @@ public class ProductPriceServiceImplTest {
         String expectedMessage = "Product Id not found in datastore : 1";
         String actualMessage = exception.getMessage();
 
-        System.out.print("actualMessage2342432 "+actualMessage);
         assertTrue(actualMessage.contains(expectedMessage));
     }
 }

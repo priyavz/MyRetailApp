@@ -1,12 +1,9 @@
 package com.myretail.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.myretail.exception.ProductNotFoundException;
-import com.myretail.model.ProductData;
+import com.myretail.common.exception.CustomException;
+import com.myretail.common.exception.ProductNotFoundException;
 import org.springframework.web.reactive.function.client.WebClientException;
 
-import java.util.NoSuchElementException;
-
 public interface ProductDetailsService {
-    String getProductName(String productId)  throws JsonProcessingException, WebClientException, ProductNotFoundException;
+    String getProductName(String productId)  throws CustomException, WebClientException, ProductNotFoundException;
 }

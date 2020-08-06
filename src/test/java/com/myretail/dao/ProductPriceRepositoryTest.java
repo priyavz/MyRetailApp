@@ -1,6 +1,7 @@
 package com.myretail.dao;
 
-import com.myretail.model.ProductPriceEntity;
+import com.myretail.common.dao.ProductPriceRepository;
+import com.myretail.common.model.ProductPriceEntity;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

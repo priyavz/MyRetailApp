@@ -1,9 +1,9 @@
 package com.myretail.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.myretail.exception.ProductNotFoundException;
-import com.myretail.model.CurrentPrice;
-import com.myretail.model.ProductData;
+import com.myretail.common.exception.CustomException;
+import com.myretail.common.exception.ProductNotFoundException;
+import com.myretail.common.model.CurrentPrice;
+import com.myretail.common.model.ProductData;
 import com.myretail.service.ProductDataService;
 import com.myretail.service.ProductDetailsService;
 import com.myretail.service.ProductPriceService;
@@ -28,7 +28,7 @@ public class ProductDataServiceImpl implements ProductDataService {
     }
 
     @Override
-    public ProductData getProductDataById(String productId) throws JsonProcessingException, WebClientException, ProductNotFoundException {
+    public ProductData getProductDataById(String productId) throws CustomException, WebClientException, ProductNotFoundException {
 
         CurrentPrice currentPrice  = productPriceService.getPrice(productId);
         log.debug("{} :: Setting current price for the product with id {}.. ", Thread.currentThread().getId(), productId);

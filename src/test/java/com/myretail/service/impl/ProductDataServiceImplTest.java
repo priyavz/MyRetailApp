@@ -1,13 +1,13 @@
 package com.myretail.service.impl;
 
-import com.myretail.model.CurrentPrice;
-import com.myretail.model.ProductData;
-import com.myretail.model.ProductPriceEntity;
-import com.myretail.service.ProductDataService;
-import com.myretail.service.ProductDetailsService;
+import com.myretail.common.exception.CustomException;
+import com.myretail.common.exception.ProductNotFoundException;
+import com.myretail.common.model.CurrentPrice;
+import com.myretail.common.model.ProductData;
 import com.myretail.service.ProductPriceService;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -15,14 +15,10 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.reactive.function.client.ClientResponse;
-import reactor.core.publisher.Mono;
-
-import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -30,12 +26,11 @@ import static org.junit.Assert.assertEquals;
 public class ProductDataServiceImplTest {
 
     @Mock
-    ProductPriceService productPriceRepositoryMock;
+    ProductPriceService productPriceServiceMock;
 
     @Mock
-    ProductDetailsServiceImpl productDetailsService;
+    ProductDetailsServiceImpl productDetailsServiceMock;
 
-    @Mock
     ProductDataServiceImpl productDataService;
     /**
      * Setup for Mockito before any test run.
@@ -43,25 +38,51 @@ public class ProductDataServiceImplTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        productDataService = new ProductDataServiceImpl(productPriceRepositoryMock,productDetailsService);
+        productDataService = new ProductDataServiceImpl(productPriceServiceMock,productDetailsServiceMock);
     }
 
     @Test
-    public void getProductByIdTest() throws Exception{
+    public void getProductById_dataPresent_successful() throws Exception{
+        when(productPriceServiceMock.getPrice(Mockito.anyString())).thenReturn(new CurrentPrice(100.00,"USD"));
+        when(productDetailsServiceMock.getProductName(Mockito.anyString())).thenReturn("Samsung BluRay Player");
+        ProductData productData = productDataService.getProductDataById(Mockito.anyString());
+        assertEquals(productData.getCurrent_price().getValue(),100.00,0);
+        assertEquals(productData.getCurrent_price().getCurrency_code(),"USD");
+        assertEquals(productData.getName(),"Samsung BluRay Player");
+    }
 
-//        //Objects created for the actual Mock
-//        CurrentPrice currentPriceMock = new CurrentPrice(13.49,"USD");
-////        ProductData productData = new ProductData("13860428",) ;
-//        Optional<ProductPriceEntity> productPriceEntityOptionalMock = Optional.of(new ProductPriceEntity("1",100.00,"USD"));
-//        Mockito.when(productPriceRepositoryMock.findById(Mockito.anyString())).thenReturn(productPriceEntityOptionalMock);
-//        Mono<String> monoResponseMock = Mono.just("1");
-//        Mockito.when(myRetailServiceMock.getProductDetailsById(Mockito.anyString())).thenReturn(Mono.just(ClientResponse.create(HttpStatus.ACCEPTED).build()));
-//
-//        System.out.println("productPriceRepositoryMock {}"+productPriceRepositoryMock);
-//        System.out.println("myRetailServiceMock {}"+myRetailServiceMock);
-//
-//        ProductData productData = productDataService.getProductDataById("1");
-//        assertEquals("1",productData.getId());
-//        assertEquals(100.00,productData.getCurrent_price());
+    @Test
+    public void getProductById_productNotFoundInDataStore_throwsProductNotFoundException() throws Exception{
+        when(productPriceServiceMock.getPrice("1")).thenThrow( new ProductNotFoundException("1", "Product Id not found in datastore"));
+        when(productDetailsServiceMock.getProductName("1")).thenReturn("Samsung BluRay Player");
+        ProductNotFoundException ex = Assertions.assertThrows(ProductNotFoundException.class, () -> {
+            productDataService.getProductDataById("1");
+        });
+        assertEquals(ex.getMessage(),"Product Id not found in datastore : 1");
+    }
+
+    @Test
+    public void getProductById_productNotFoundInWebService_throwsProductNotFoundException() throws Exception{
+        when(productPriceServiceMock.getPrice(Mockito.anyString())).thenReturn(new CurrentPrice(100.00,"USD"));
+        when(productDetailsServiceMock.getProductName("1")).thenThrow( new ProductNotFoundException("1", "Unable to retrieve product details from look up service."));
+        ProductNotFoundException ex = Assertions.assertThrows(ProductNotFoundException.class, () -> {
+            productDataService.getProductDataById("1");
+        });
+        assertEquals(ex.getMessage(),"Unable to retrieve product details from look up service. : 1");
+    }
+
+    @Test
+    public void getProductById_jsonProcessingException_throwsCustomException() throws Exception{
+        when(productPriceServiceMock.getPrice(Mockito.anyString())).thenReturn(new CurrentPrice(100.00,"USD"));
+        when(productDetailsServiceMock.getProductName("1")).thenThrow( new CustomException( "JsonProcessingException occurred while parsing response for ","{custom response}"));
+        CustomException ex = Assertions.assertThrows(CustomException.class, () -> {
+            productDataService.getProductDataById("1");
+        });
+        assertEquals(ex.getMessage(),"JsonProcessingException occurred while parsing response for {custom response}");
+    }
+
+    @Test
+    public void getProductById_webClientException_throwsWebClientException() throws Exception{
+        //TODO: Throw webclient exception.
     }
 }

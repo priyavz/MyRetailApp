@@ -1,9 +1,9 @@
 package com.myretail.service.impl;
 
-import com.myretail.dao.ProductPriceRepository;
-import com.myretail.exception.ProductNotFoundException;
-import com.myretail.model.CurrentPrice;
-import com.myretail.model.ProductPriceEntity;
+import com.myretail.common.dao.ProductPriceRepository;
+import com.myretail.common.exception.ProductNotFoundException;
+import com.myretail.common.model.CurrentPrice;
+import com.myretail.common.model.ProductPriceEntity;
 import com.myretail.service.ProductPriceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
