@@ -7,15 +7,14 @@ import com.myretail.common.model.ProductData;
 import com.myretail.service.ProductDataService;
 import com.myretail.service.ProductDetailsService;
 import com.myretail.service.ProductPriceService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClientException;
 
 @Component
+@Slf4j
 public class ProductDataServiceImpl implements ProductDataService {
-    private static final Logger log = LoggerFactory.getLogger(ProductDataServiceImpl.class);
 
     private final ProductPriceService productPriceService;
 
@@ -29,16 +28,13 @@ public class ProductDataServiceImpl implements ProductDataService {
 
     @Override
     public ProductData getProductDataById(String productId) throws CustomException, WebClientException, ProductNotFoundException {
-
-        CurrentPrice currentPrice  = productPriceService.getPrice(productId);
-        log.debug("{} :: Setting current price for the product with id {}.. ", Thread.currentThread().getId(), productId);
+        CurrentPrice currentPrice = productPriceService.getPrice(productId);
+        log.debug("productId={} msg=Setting current price", productId);
 
         String productName = productDetailsService.getProductName(productId);
-        log.debug("{} :: Setting product name for productId {}  ", Thread.currentThread().getId(), productId);
+        log.debug("productId={} msg=Setting product name", productId);
 
-        return new ProductData(productId,productName,currentPrice);
+        return new ProductData(productId, productName, currentPrice);
     }
-
-
 
 }

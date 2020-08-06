@@ -7,7 +7,6 @@ import okhttp3.mockwebserver.RecordedRequest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.mockito.MockitoAnnotations;
 import org.springframework.mock.env.MockEnvironment;
 import org.springframework.web.reactive.function.client.ClientResponse;
@@ -17,7 +16,6 @@ import reactor.test.StepVerifier;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
 
 public class WebClientServiceImplTest {
     MockEnvironment mockEnvironment;
@@ -40,10 +38,10 @@ public class WebClientServiceImplTest {
         } else {
             mockEnvironment.setProperty("spring_profiles", "default");
         }
-        mockEnvironment.setProperty("target.restUrl1", "https://redsky.target.com");
-        mockEnvironment.setProperty("target.restUrl2", "/v3/pdp/tcin/");
-        mockEnvironment.setProperty("target.restUrl3", "?excludes=taxonomy,price,promotion,bulk_ship,rating_and_review_reviews,rating_and_review_statistics,question_answer_statistics");
-        mockEnvironment.setProperty("target.response","{\"product\": {\"item\": {\"product_description\": {\"title\": \"BluRay Player\" } } } }");
+
+        mockEnvironment.setProperty("target.prodcut.lookup.base.url", "https://redsky.target.com");
+        mockEnvironment.setProperty("target.product.lookup.endpoint", "/v3/pdp/tcin/%s?excludes=taxonomy,price,promotion,bulk_ship,rating_and_review_reviews,rating_and_review_statistics,question_answer_statistics&key=candidate");
+        mockEnvironment.setProperty("target.response", "{\"product\": {\"item\": {\"product_description\": {\"title\": \"BluRay Player\" } } } }");
 
         webClientService = new WebClientServiceImpl(mockEnvironment);
         mockBackEnd = new MockWebServer();

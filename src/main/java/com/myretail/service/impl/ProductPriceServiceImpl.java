@@ -23,7 +23,11 @@ public class ProductPriceServiceImpl implements ProductPriceService {
     @Override
     public CurrentPrice getPrice(String productId) throws ProductNotFoundException {
         Optional<ProductPriceEntity> productPriceEntity = productPriceRepository.findById(productId);
-        if(!productPriceEntity.isPresent()) throw new ProductNotFoundException(productId, "Product Id not found in datastore");
-        return new CurrentPrice( productPriceEntity.get().getPrice(),productPriceEntity.get().getCurrencyCode());
+
+        if (!productPriceEntity.isPresent())
+            throw new ProductNotFoundException(productId, "Product Id not found in datastore");
+
+        return new CurrentPrice(productPriceEntity.get().getPrice(), productPriceEntity.get().getCurrencyCode());
     }
+
 }

@@ -13,13 +13,13 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class GlobalMyRetailExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity<Object> handleProductNotFound(Exception ex) {
+    public ResponseEntity<CustomErrorResponse> handleProductNotFound(Exception ex) {
         CustomErrorResponse errors = new CustomErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
         return new ResponseEntity<>(errors, new HttpHeaders(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<CustomErrorResponse> handleWebClientException(Exception ex) {
+    public ResponseEntity<CustomErrorResponse> handleAllOtherExceptions(Exception ex) {
         CustomErrorResponse errors = new CustomErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
         return new ResponseEntity<>(errors, HttpStatus.INTERNAL_SERVER_ERROR);
     }

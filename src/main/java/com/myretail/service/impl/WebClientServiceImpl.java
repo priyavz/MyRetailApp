@@ -1,8 +1,7 @@
 package com.myretail.service.impl;
 
 import com.myretail.service.WebClientService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -10,13 +9,13 @@ import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import static java.lang.String.format;
+
 @Component
+@Slf4j
 public class WebClientServiceImpl implements WebClientService {
-    private static final Logger log = LoggerFactory.getLogger(WebClientServiceImpl.class);
 
     private final Environment env;
-
-    private WebClient webClient;
 
     @Autowired
     public WebClientServiceImpl(Environment env) {
@@ -24,9 +23,18 @@ public class WebClientServiceImpl implements WebClientService {
     }
 
     public Mono<ClientResponse> getProductDetailsById(String productId) {
-        log.debug("{} About to make http request for product with productId {}  ",Thread.currentThread().getId(),productId);
-        webClient = WebClient.create(env.getProperty("target.restUrl1"));
-        return webClient.get().uri(env.getProperty("target.restUrl2") + productId + env.getProperty("target.restUrl3"))
-                .exchange();
+        log.debug("productId={} msg=About to make http request for product", productId);
+
+        String baseUrl = env.getProperty("target.prodcut.lookup.base.url");
+        String endpoint = env.getProperty("target.product.lookup.endpoint");
+        String lookupUrl = format(endpoint, productId);
+
+        log.debug("productId={} msg=About to do a product lookup. url={}", productId, lookupUrl);
+
+        return WebClient.create(baseUrl)
+                        .get()
+                        .uri(lookupUrl)
+                        .exchange();
     }
+
 }
