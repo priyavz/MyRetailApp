@@ -1,9 +1,5 @@
-# Getting Started
+Successful product lookup :
+http://localhost:8082/myRetail/v1/product/13860428
 
-### Reference Documentation
-For further reference, please consider the following sections:
-
-* [Official Apache Maven documentation](https://maven.apache.org/guides/index.html)
-* [Spring Boot Maven Plugin Reference Guide](https://docs.spring.io/spring-boot/docs/2.3.2.RELEASE/maven-plugin/reference/html/)
-* [Create an OCI image](https://docs.spring.io/spring-boot/docs/2.3.2.RELEASE/maven-plugin/reference/html/#build-image)
-
+ProductNotFound:
+http://localhost:8082/myRetail/v1/product/13860400
