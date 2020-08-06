@@ -6,8 +6,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 @SpringBootApplication
+@EnableMongoRepositories("com.myretail.common.dao")
 @ComponentScan("com.myretail.controller")
 @ComponentScan("com.myretail.service")
 @ComponentScan("com.myretail.common.dao")
